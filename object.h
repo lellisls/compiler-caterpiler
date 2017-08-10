@@ -144,7 +144,7 @@ void insert_label(list_labels *labels_list, AddrKind type, char name[], int inde
 
 void insert_call(list_parameters *parameters_list, list_calls *returner_calls_list, char name[], int index, int line);
 
-
+void write_index_variable(list_variables *variables_list, char name[], int index, int array_index, char scope[]);
 
 //searches the position in memory of a variable given its name, scope and array index
 int search_variable(list_variables *variables_list, char name[], int array_position, char scope[]);

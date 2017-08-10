@@ -168,6 +168,7 @@ void consume_parameters(TipoLista *table, list_instructions *instructions_list, 
 		type_instruction *instruction = instructions_list->start;
 		type_parameter *parameter = parameters_list->start;
 		TipoID *table_item;
+		TipoID *table_aux;
 
 		int memory_from;
 		int memory_to;
@@ -176,6 +177,7 @@ void consume_parameters(TipoLista *table, list_instructions *instructions_list, 
 		int i;
 		int array_index;
 		int arr_size;
+		int from_index;
 
 		while(parameter!=NULL){
 			arr_size = 0;
@@ -212,17 +214,24 @@ void consume_parameters(TipoLista *table, list_instructions *instructions_list, 
 									//store value from register result into memory
 									format_one(instructions_list, G_ST, register_result, memory_to);
 								}else{
-									//goes through 'from' array and stores values into 'to' array
+
+									from_index = search_variable(variables_list, parameter->name, 0, parameter->scope);
+									//goes through 'from' array and writes its memory addresses into 'to' array
 									for (array_index = 0; array_index <= table_item->array_size; array_index++) {
-										//search for parameter in memory
-										memory_from = search_variable(variables_list, parameter->name, array_index, parameter->scope);
-										//load from memory to register result
-										format_one(instructions_list, G_LD, register_result, memory_from);
-										//search for position in memory to store parameter
-										memory_to = search_variable(variables_list, table_item->nomeID, array_index, table_item->escopo);
-										//store value from register result into memory
-										format_one(instructions_list, G_ST, register_result, memory_to);
+										write_index_variable(variables_list, table_item->nomeID, from_index, array_index, table_item->escopo);
 									}
+
+									//goes through 'from' array and stores values into 'to' array
+									// for (array_index = 0; array_index <= table_item->array_size; array_index++) {
+										//search for parameter in memory
+										// memory_from = search_variable(variables_list, parameter->name, array_index, parameter->scope);
+										//load from memory to register result
+										// format_one(instructions_list, G_LD, register_result, memory_from);
+										//search for position in memory to store parameter
+										// memory_to = search_variable(variables_list, table_item->nomeID, array_index, table_item->escopo);
+										//store value from register result into memory
+										// format_one(instructions_list, G_ST, register_result, memory_to);
+									// }
 								}
 							}
 						}
@@ -476,6 +485,39 @@ void print_labels(list_labels *labels_list) {
 		printf("NAME:%s INDEX:%d LINE:%d TYPE:%d \n", p->name, p->index, p->line, p->type);
 		p = p->next;
 	}
+}
+
+void write_index_variable(list_variables *variables_list, char name[], int index, int array_index, char scope[]){
+	type_variable *p = variables_list->start;
+	char local_scope[50];
+	strcpy(local_scope, scope);
+
+	while (p!=NULL) {
+		// printf("index: %d \t array: %d \t id: %s \t scope: %s\n", p->index, p->index_array, p->id, p->scope);
+		if(!strcmp(p->scope, "global")){
+			if(!strcmp(name, p->id)){
+				strcpy(local_scope, "global");
+				break;
+			}
+		}
+		p = p->next;
+	}
+
+	p = variables_list->start;
+	while (p!=NULL) {
+		if(!strcmp(p->scope, local_scope)){
+			if(!strcmp(p->id, name)){
+				p->index = index;
+				p->index_array = array_index;
+				break;
+			}
+		}
+		p = p->next;
+	}
+
+	printf("ERROR: variable not found!\n");
+	printf("%s %d %s\n", name, array_index, local_scope);
+
 }
 
 //searches the position in memory of a variable given its name, scope and array index
