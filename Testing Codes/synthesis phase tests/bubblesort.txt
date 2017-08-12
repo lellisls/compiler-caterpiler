@@ -1,0 +1,51 @@
+void bubblesort(int array[], int length)
+{
+    int k;
+    int j;
+    int aux;
+
+    k = length - 1;
+    while (k > 0)
+    {
+        j = 0;
+        while (j < k)
+        {
+            if (array[j] > array[j + 1])
+            {
+                aux = array[j];
+                array[j] = array[j + 1];
+                array[j + 1] = aux;
+            }
+            j = j + 1;
+        }
+        k = k - 1;
+    }
+}
+
+void outputArray(int array[], int length)
+{
+    int index;
+
+    index = 0;
+    while (index < length)
+    {
+        output(array[index]);
+        index = index + 1;
+    }
+}
+
+void main(void)
+{
+    int array[5];
+    int length;
+
+    array[0] = 15;
+    array[1] = 72;
+    array[2] = 14;
+    array[3] = 0;
+    array[4] = 3;
+    length = 5;
+
+    bubblesort(array, length);
+    outputArray(array, length);
+}

@@ -3,7 +3,7 @@ module simpleInstructionsRam(clock, address, iRAMOutput);
 	 input clock;
 	 output [31:0] iRAMOutput;
 	 integer firstClock = 0;
-	 reg [31:0] instructionsRAM[134:0];
+	 reg [31:0] instructionsRAM[124:0];
 
 	 always @ ( posedge clock ) begin
 	 	 if (firstClock==0) begin
@@ -102,46 +102,36 @@ module simpleInstructionsRam(clock, address, iRAMOutput);
 	 	 instructionsRAM[91] = 32'b00000100111000010000000000000000;//ADDi r[1], #0 to r[7]
 	 	 instructionsRAM[92] = 32'b01100100111000000000000000000101;//Store r[7] in m[#5]
 	 	 instructionsRAM[93] = 32'b01100000001000000000000000000010;//Load m[#2] to r[1]
-	 	 instructionsRAM[94] = 32'b01100000001000000000000000000010;//Load m[#2] to r[1]
-	 	 instructionsRAM[95] = 32'b01100100001000000000000000000010;//Store r[1] in m[#2]
-	 	 instructionsRAM[96] = 32'b01100000001000000000000000000011;//Load m[#3] to r[1]
-	 	 instructionsRAM[97] = 32'b01100100001000000000000000000011;//Store r[1] in m[#3]
-	 	 instructionsRAM[98] = 32'b01100000001000000000000000000100;//Load m[#4] to r[1]
-	 	 instructionsRAM[99] = 32'b01100100001000000000000000000100;//Store r[1] in m[#4]
-	 	 instructionsRAM[100] = 32'b01100000001000000000000000000101;//Load m[#5] to r[1]
-	 	 instructionsRAM[101] = 32'b01100100001000000000000000000101;//Store r[1] in m[#5]
-	 	 instructionsRAM[102] = 32'b01100000001000000000000000000110;//Load m[#6] to r[1]
-	 	 instructionsRAM[103] = 32'b01100100001000000000000000000110;//Store r[1] in m[#6]
-	 	 instructionsRAM[104] = 32'b01101000001000000000000000000100;//Loadi #4 to r[1]
-	 	 instructionsRAM[105] = 32'b01100100001000000000000000001100;//Store r[1] in m[#12]
-	 	 instructionsRAM[106] = 32'b01101011111000000000000000010100;//Loadi #20 to r[31]
-	 	 instructionsRAM[107] = 32'b00000111111111110000000000000001;//ADDi r[31], #1 to r[31]
-	 	 instructionsRAM[108] = 32'b01101000001000000000000001101111;//Loadi #111 to r[1]
-	 	 instructionsRAM[109] = 32'b10001000001111110000000000000000;//rStore to r[1] in m[r[31]] 
-	 	 instructionsRAM[110] = 32'b01010100000000000000000000000010;//Jump to #2
-	 	 instructionsRAM[111] = 32'b00001111111111110000000000000001;//SUBi r[31], #1 to r[31]
-	 	 instructionsRAM[112] = 32'b01100000001000000000000000000010;//Load m[#2] to r[1]
-	 	 instructionsRAM[113] = 32'b01100100001000000000000000000010;//Store r[1] in m[#2]
-	 	 instructionsRAM[114] = 32'b01100000001000000000000000000011;//Load m[#3] to r[1]
-	 	 instructionsRAM[115] = 32'b01100100001000000000000000000011;//Store r[1] in m[#3]
-	 	 instructionsRAM[116] = 32'b01100000001000000000000000000100;//Load m[#4] to r[1]
-	 	 instructionsRAM[117] = 32'b01100100001000000000000000000100;//Store r[1] in m[#4]
-	 	 instructionsRAM[118] = 32'b01100000001000000000000000000101;//Load m[#5] to r[1]
-	 	 instructionsRAM[119] = 32'b01100100001000000000000000000101;//Store r[1] in m[#5]
-	 	 instructionsRAM[120] = 32'b01100000001000000000000000000110;//Load m[#6] to r[1]
-	 	 instructionsRAM[121] = 32'b01100100001000000000000000000110;//Store r[1] in m[#6]
-	 	 instructionsRAM[122] = 32'b01110100001000000000000000000000;//Input to r[1]
-	 	 instructionsRAM[123] = 32'b00000100111000010000000000000000;//ADDi r[1], #0 to r[7]
-	 	 instructionsRAM[124] = 32'b01100100111000000000000000000111;//Store r[7] in m[#7]
-	 	 instructionsRAM[125] = 32'b01100000011000000000000000000111;//Load m[#7] to r[3]
-	 	 instructionsRAM[126] = 32'b00000100100000110000000000000010;//ADDi r[3], #2 to r[4]
-	 	 instructionsRAM[127] = 32'b10000100001001000000000000000000;//Loadr m[r[4]] to r[1]
-	 	 instructionsRAM[128] = 32'b00000100111000010000000000000000;//ADDi r[1], #0 to r[7]
-	 	 instructionsRAM[129] = 32'b00000100001001110000000000000000;//ADDi r[7], #0 to r[1]
-	 	 instructionsRAM[130] = 32'b01111000001000000000000000000000;//Pre Output r[1]
-	 	 instructionsRAM[131] = 32'b10000000001000000000000000000000;//Output r[1]
-	 	 instructionsRAM[132] = 32'b10000000001000000000000000000000;//Output r[1]
-	 	 instructionsRAM[133] = 32'b01110000000000000000000000000000;//Hlt
+	 	 instructionsRAM[94] = 32'b01101000001000000000000000000100;//Loadi #4 to r[1]
+	 	 instructionsRAM[95] = 32'b01100100001000000000000000001100;//Store r[1] in m[#12]
+	 	 instructionsRAM[96] = 32'b01101011111000000000000000010100;//Loadi #20 to r[31]
+	 	 instructionsRAM[97] = 32'b00000111111111110000000000000001;//ADDi r[31], #1 to r[31]
+	 	 instructionsRAM[98] = 32'b01101000001000000000000001100101;//Loadi #101 to r[1]
+	 	 instructionsRAM[99] = 32'b10001000001111110000000000000000;//rStore to r[1] in m[r[31]] 
+	 	 instructionsRAM[100] = 32'b01010100000000000000000000000010;//Jump to #2
+	 	 instructionsRAM[101] = 32'b00001111111111110000000000000001;//SUBi r[31], #1 to r[31]
+	 	 instructionsRAM[102] = 32'b01100000001000000000000000000010;//Load m[#2] to r[1]
+	 	 instructionsRAM[103] = 32'b01100100001000000000000000000010;//Store r[1] in m[#2]
+	 	 instructionsRAM[104] = 32'b01100000001000000000000000000011;//Load m[#3] to r[1]
+	 	 instructionsRAM[105] = 32'b01100100001000000000000000000011;//Store r[1] in m[#3]
+	 	 instructionsRAM[106] = 32'b01100000001000000000000000000100;//Load m[#4] to r[1]
+	 	 instructionsRAM[107] = 32'b01100100001000000000000000000100;//Store r[1] in m[#4]
+	 	 instructionsRAM[108] = 32'b01100000001000000000000000000101;//Load m[#5] to r[1]
+	 	 instructionsRAM[109] = 32'b01100100001000000000000000000101;//Store r[1] in m[#5]
+	 	 instructionsRAM[110] = 32'b01100000001000000000000000000110;//Load m[#6] to r[1]
+	 	 instructionsRAM[111] = 32'b01100100001000000000000000000110;//Store r[1] in m[#6]
+	 	 instructionsRAM[112] = 32'b01110100001000000000000000000000;//Input to r[1]
+	 	 instructionsRAM[113] = 32'b00000100111000010000000000000000;//ADDi r[1], #0 to r[7]
+	 	 instructionsRAM[114] = 32'b01100100111000000000000000000111;//Store r[7] in m[#7]
+	 	 instructionsRAM[115] = 32'b01100000011000000000000000000111;//Load m[#7] to r[3]
+	 	 instructionsRAM[116] = 32'b00000100100000110000000000000010;//ADDi r[3], #2 to r[4]
+	 	 instructionsRAM[117] = 32'b10000100001001000000000000000000;//Loadr m[r[4]] to r[1]
+	 	 instructionsRAM[118] = 32'b00000100111000010000000000000000;//ADDi r[1], #0 to r[7]
+	 	 instructionsRAM[119] = 32'b00000100001001110000000000000000;//ADDi r[7], #0 to r[1]
+	 	 instructionsRAM[120] = 32'b01111000001000000000000000000000;//Pre Output r[1]
+	 	 instructionsRAM[121] = 32'b10000000001000000000000000000000;//Output r[1]
+	 	 instructionsRAM[122] = 32'b10000000001000000000000000000000;//Output r[1]
+	 	 instructionsRAM[123] = 32'b01110000000000000000000000000000;//Hlt
 
 	 	 firstClock <= 0;
 	 	 end

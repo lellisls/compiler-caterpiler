@@ -507,9 +507,11 @@ void write_index_variable(list_variables *variables_list, char name[], int index
 	while (p!=NULL) {
 		if(!strcmp(p->scope, local_scope)){
 			if(!strcmp(p->id, name)){
+				if(p->index_array==array_index){
 				p->index = index;
-				p->index_array = array_index;
+				// p->index_array = array_index;
 				break;
+			}
 			}
 		}
 		p = p->next;
