@@ -1,13 +1,14 @@
 
 #include "intermediate.h"
+#include "assert.h"
 
 static int temporary = 0;
 static int label = 0;
 static int flag_param = 0;
 int test_count=0;
 int number_of_quadruples = 0;
-FILE *file_quadruples;
-FILE *file_read_quadruples;
+FILE *file_quadruples = NULL;
+FILE *file_read_quadruples = NULL;
 
 int counter = 0;
 int flag_later = 0;
@@ -15,11 +16,8 @@ int indx = 0;
 int index_parameters = 0;
 
 int check_if_int(TipoLista *table, char name[]){
-  TipoID *item;
-  int hash;
-  hash = string2int(name)%211;
-  item = table[hash].start;
-  while (item!=NULL) {
+  int hash = string2int(name) % 211;
+  for(TipoID *item = table[hash].start; item != NULL; item = item->prox) {
     if(!strcmp(item->nomeID, name)){
       if (!strcmp(item->tipoID, "func")) {
         if (!strcmp(item->tipoData, "int")) {
@@ -27,99 +25,86 @@ int check_if_int(TipoLista *table, char name[]){
         }
       }
     }
-    item = item->prox;
   }
   return 0;
 }
 
 void add_parameters_to_table(TipoLista *table, list_quadruple *quad_list) {
 
-  int hash;
-  quadruple *p = quad_list->start;
-  TipoID *q;
-  while (p!=NULL) {
+ 
+  for (quadruple *p = quad_list->start; p!= NULL; p = p->next){    
     switch (p->op) {
       case PrmVarK:
-      case PrmArrK:
-        hash = string2int(p->address_1.name)%211;
-        q = table[hash].start;
-        while (q!=NULL) {
+      case PrmArrK:{
+        int hash = string2int(p->address_1.name)%211;
+        for (TipoID *q = table[hash].start; q != NULL; q = q->prox) {
           if (!strcmp(p->address_1.name, q->nomeID)&&!strcmp(p->address_2.name, q->escopo)) {
             q->indice_parametro = p->address_3.value;
             break;
           }
-          q = q->prox;
         }
         // printf("%s %s %d\n", p->address_1.name, p->address_2.name, p->address_3.value);
         break;
+      }
       default:
         break;
     }
-    p = p->next;
   }
 }
 
-void add_indexes_to_table(TipoLista *table, list_quadruple *quad_list){
+void add_indexes_to_table(TipoLista *table, list_quadruple *quad_list) {
+  quadruple *main_id = NULL;
 
-  int hash;
-  quadruple *p = quad_list->start;
-  quadruple *main_id;
-  TipoID *q;
-  TipoID *previous_function;
-
-
-  previous_function = NULL;
-
-  while (p!=NULL) {
+  for (quadruple *p = quad_list->start; p != NULL; p = p->next){
     if (p->op==LblK) {
         if (p->address_3.kind==String) {
-          hash = string2int(p->address_3.name)%211;
-          q = table[hash].start;
-          while (q!=NULL) {
+          int hash = string2int(p->address_3.name)%211;
+          TipoID *previous_function = NULL;
+          for (TipoID *q = table[hash].start; q!= NULL; q = q->prox){
             if (!strcmp(q->tipoID,"func")&&!strcmp(q->nomeID,p->address_3.name)) {
-              if(previous_function!=NULL)
+              if(previous_function!=NULL){
                 previous_function->intermediate_finish = p->index-1;
+              }
               q->intermediate_start = p->index;
               previous_function = q;
               break;
             }
-            q = q->prox;
           }
         }
     }
     main_id = p;
-    p = p->next;
   }
-  hash = string2int("main")%211;
-  q = table[hash].start;
+  assert(main_id != NULL);
+  int hash = string2int("main")%211;
+  TipoID *q = table[hash].start;
+  assert(q != NULL);
   q->intermediate_finish = main_id->index;
-
 }
 
 void store_quadruple(OpKind o, AddrKind k1, AddrKind k2, AddrKind k3,
-                     int v1, int v2, int v3,
-                     char n1[], char n2[], char n3[]){
-                      // if(k1!=IntConst)
-                      //   v1 = 0;
-                      // if(k2!=IntConst)
-                      //   v2 = 0;
-                      // if(k3!=IntConst)
-                      //   v3 = 0;
-                      if(k1!=String)
-                        strcpy(n1, "empty");
-                      if(k2!=String)
-                        strcpy(n2, "empty");
-                      if(k3!=String)
-                        strcpy(n3, "empty");
-                      number_of_quadruples++;
-                        fprintf(file_quadruples, "%d %d %d %d %d %d %d %s %s %s ",
-                        o, k1, k2, k3, v1, v2, v3, n1, n2, n3);
-                     }
+    int v1, int v2, int v3,
+    char n1[], char n2[], char n3[]){
+    // if(k1!=IntConst)
+    //   v1 = 0;
+    // if(k2!=IntConst)
+    //   v2 = 0;
+    // if(k3!=IntConst)
+    //   v3 = 0;
+    if(k1!=String)
+      strcpy(n1, "empty");
+    if(k2!=String)
+      strcpy(n2, "empty");
+    if(k3!=String)
+      strcpy(n3, "empty");
+    number_of_quadruples++;
+      fprintf(file_quadruples, "%d %d %d %d %d %d %d %s %s %s ",
+      o, k1, k2, k3, v1, v2, v3, n1, n2, n3);
+}
 
 void insert_quadruple(list_quadruple *quad_list, quadruple *quad){
    quadruple *p = quad_list->start;
    quadruple *alloc_quad = malloc(sizeof(quadruple));
-   *alloc_quad = *quad;
+   memcpy(alloc_quad, quad, sizeof(quadruple));
   //  printf("                               %d\n", quad->op);
    int breaker = 0;
    alloc_quad->index = indx;
@@ -202,14 +187,12 @@ void insert_quadruples(list_quadruple *quad_list){
 }
 
 void print_quadruple_list(list_quadruple *quad_list){
-  quadruple *p = quad_list->start;
-  while (p!=NULL) {
+  for (quadruple *p = quad_list->start; p != NULL; p = p->next) {
     printf("index: %d \toperation: %d \tscope: %s\n \t1: Kind: %d \tName:%s \tValue: %d\n \t2: Kind: %d \tName:%s \tValue: %d\n \t3: Kind: %d \tName:%s \tValue: %d\n",
     p->index, p->op, p->scope,
     p->address_1.kind, p->address_1.name, p->address_1.value,
     p->address_2.kind, p->address_2.name, p->address_2.value,
     p->address_3.kind, p->address_3.name, p->address_3.value);
-    p = p->next;
   }
 }
 

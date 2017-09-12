@@ -320,7 +320,7 @@ int buscaVariavel(TipoLista *list, char nomeID[], char escopo[]) {
     int hash = string2int(nomeID)%211;
     TipoID *c = list[hash].start;
     while(c != NULL) {
-      if((!strcmp(nomeID, c->nomeID)) && (!strcmp(escopo, c->escopo)) || (!strcmp("global", c->escopo))) {
+      if(((!strcmp(nomeID, c->nomeID)) && (!strcmp(escopo, c->escopo))) || (!strcmp("global", c->escopo))) {
         return 1;
       }
       c = c->prox;
@@ -723,7 +723,7 @@ i = 0;
   /*while(getToken() != ENDFILE);*/
   syntaxTree = parse();
 
-  // printTree(syntaxTree);
+  printTree(syntaxTree);
   generate_icode_launcher(&quad_list, syntaxTree, &vetor);
 
   generate_code_launcher(&quad_list, &vetor);
